@@ -12,6 +12,8 @@ FORCE=1
 BACKEND_NETWORK=VLAN
 # Only for VLAN backend
 BACKEND_VDS="pcc-178-32-194-72_DC3594-vrack"
+BACKEND_VLAN_OFFSET=0
+VLAN_SHIFT=0
 
 # Some Specs
 SPEC=OVH
@@ -25,10 +27,13 @@ ROOT_DOMAIN="az-rbx.cloud-garage.net"
 
 # Transit LS for cPodRouter connectivity
 TRANSIT=172.23
-ASN=65500
+TRANSIT_SUBNET=${TRANSIT}.2
+
+ASN=${HEADER_ASN}00
 
 TRANSIT_NET="172.22"
-DNS="${TRANSIT_NET}.10.1"
+TRANSIT_GW="${TRANSIT_NET}.10.1"
+DNS=${TRANSIT_GW}
 
 CLUSTER="OVH"
 HEADER="cPod"
@@ -44,6 +49,8 @@ NSX_TRANSPORTZONE="TZ_3594"
 ISO_BANK_SERVER="forty-two.az-rbx.cloud-garage.net"
 ISO_BANK_DIR="/data/BITS"
 
+export CPODEDGE_DATASTORE="/data/BITS"
+
 export VCENTER=pcc-178-32-194-72.ovh.com
 export VCENTER_ADMIN="bdereims"
 export VCENTER_DATACENTER="pcc-178-32-194-72_cloud-garage"
@@ -51,6 +58,8 @@ export VCENTER_CLUSTER="Cluster"
 TEMPLATE_VM="template-cPodRouter"
 TEMPLATE_ESX=${TEMPLATE_ESX:-"template-ESX70U1"}
 TEMPLATE_FILER="template-cPodFiler"
+export TEMPLATE_FOLDER="Template"
+export TEMPLATE_RESOURCEPOOL="cPod-Management"
 export DATASTORE=${DATASTORE:-"vsanDatastore"}
 export VCENTER_DATASTORE=${DATASTORE}
 

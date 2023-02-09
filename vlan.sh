@@ -17,27 +17,60 @@ create_vlan()
 }
 
 # vMOTION + vSAN
-create_vlan ${BIG_MTU} 01 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${BIG_MTU} 1 24
+else
+	create_vlan ${BIG_MTU} 01 24
+fi
 
 # TEP Edges
-create_vlan ${BIG_MTU} 02 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${BIG_MTU} 2 24
+else
+	create_vlan ${BIG_MTU} 02 24
+fi
 
 # TEP Hosts
-create_vlan ${BIG_MTU} 03 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${BIG_MTU} 3 24
+else
+	create_vlan ${BIG_MTU} 03 24
+fi
 
 # General purpose VLAN 
-create_vlan ${REG_MTU} 04 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${REG_MTU} 4 24
+else
+	create_vlan ${REG_MTU} 04 24
+fi
 
 # General purpose VLAN 
-create_vlan ${REG_MTU} 05 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${REG_MTU} 5 24
+else
+	create_vlan ${REG_MTU} 05 24
+fi
 
 # General purpose VLAN 
-create_vlan ${REG_MTU} 06 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${REG_MTU} 6 24
+else
+	create_vlan ${REG_MTU} 06 24
+fi
 
 # General purpose VLAN 
-create_vlan ${REG_MTU} 07 24
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${REG_MTU} 7 24
+else
+	create_vlan ${REG_MTU} 07 24
+fi
 
+# General purpose VLAN
+if [ ${VLANID} -gt 40 ]; then
+	create_vlan ${REG_MTU} 8 24
+else
+	create_vlan ${REG_MTU} 08 24
+fi
 # Expose/Uplink - Large Subnet
 # Ex. of Carve Out: 10.12.8.0/21 = 10.12.8.0/22 + 10.12.12.0/22
 # Ex. of Carve Out: 10.12.8.0/21 = 10.12.8.0/24 + 10.12.9.0/24 + 10.12.10.0/23 + 10.12.12.0/22
-create_vlan ${REG_MTU} 08 21

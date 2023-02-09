@@ -37,7 +37,7 @@ main() {
         scp -o StrictHostKeyChecking=no ${SCRIPT} root@${THEIP}:./${SHELL_SCRIPT} 2>&1 > /dev/null
         ssh -o StrictHostKeyChecking=no root@${THEIP} "./${SHELL_SCRIPT}" 2>&1 > /dev/null
 
-	rm ${SCRIPT}
+	#rm ${SCRIPT}
 }
 
 main $1 $2

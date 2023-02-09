@@ -1,6 +1,52 @@
 #!/bin/bash -e
+echo "1"
 
-source ./install_nsx.env 
+[ "${1}" == "" ] && echo "usage: ${0} <cPod Name> <owner email>" && exit 1
+
+echo "2"
+
+source ./env
+
+if [ -f "${1}" ]; then
+        . ./${COMPUTE_DIR}/"${1}"
+else
+        SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
+
+        [ $? -ne 0 ] && echo "error: file or env '${1}' does not exist" && exit 1
+
+        CPOD=${1}
+	      unset DATASTORE
+
+        source ./${COMPUTE_DIR}/cpod-xxx_env
+        source ./${EXTRA_DIR}/deploy_nsx-t/install_nsx.env 
+fi
+
+echo "nsx mgr ip : $NSX_MANAGER_IP "
+
+echo "nsx edge ip : $NSX_EDGE_IP "
+
+AUTH_DOMAIN=${DOMAIN}
+
+###################
+
+CPOD_NAME="cpod-$1"
+NAME_HIGHER=$( echo ${1} | tr '[:lower:]' '[:upper:]' )
+CPOD_NAME_LOWER=$( echo ${CPOD_NAME} | tr '[:upper:]' '[:lower:]' )
+LINE=$( sed -n "/${CPOD_NAME_LOWER}\t/p" /etc/hosts | cut -f3 | sed "s/#//" | head -1 )
+if [ "${LINE}" != "" ] && [ "${LINE}" != "${2}" ]; then
+        echo "Error: You're not allowed to deploy"
+#        ./extra/post_slack.sh ":wow: *${2}* you're not allowed to deploy in *${NAME_HIGHER}*"
+        exit 1
+fi
+
+PASSWORD=$( ./${EXTRA_DIR}/passwd_for_cpod.sh ${1} )
+
+
+
+add_to_cpodrouter_hosts() {
+	echo "add ${1} -> ${2}"
+	ssh -o LogLevel=error ${NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
+}
 
 function print_help()
 {
@@ -15,8 +61,6 @@ Options:
 "
 }
 
-
-
 function check_tool() {
   cmd=${1}
   which "${cmd}" > /dev/null || {
@@ -25,15 +69,12 @@ function check_tool() {
   }
 }
 
-
 function clean_known_hosts() {
 
-  ssh-keygen -f "/root/.ssh/known_hosts" -R $NSX_MANAGER_IP
-  ssh-keygen -f "/root/.ssh/known_hosts" -R $NSX_CONTROLLER_IP
+  ssh-keygen -R $NSX_MANAGER_IP -f "/root/.ssh/known_hosts" 
+  #ssh-keygen -f "/root/.ssh/known_hosts" -R $NSX_CONTROLLER_IP
   ssh-keygen -f "/root/.ssh/known_hosts" -R $NSX_EDGE_IP
 }
-
-
 
 # To reduce memory requirements of the OVA
 # 1. Un-tar the OVA
@@ -70,7 +111,6 @@ function enforce_parameter() {
     exit 1
   fi
 }
-
 
 function install_nsx_manager() {
   echo "=== Install NSX Manager ==="
@@ -110,18 +150,47 @@ function install_nsx_manager() {
   enforce_parameter "$ntp" "NSX manager NTP"
   enforce_parameter "$password" "NSX manager password"
 
-  cmd="ovftool --name=\"$name\" --X:injectOvfEnv --X:logFile=ovftool.log --X:logLevel=verbose \
---allowExtraConfig $overwrite --datastore=\"$host_datastore\" --network=\"$host_network\" \
---acceptAllEulas --noSSLVerify --diskMode=thin --powerOn --prop:\"nsx_ip_0=$ip\" \
---prop:\"nsx_netmask_0=$netmask\" --prop:\"nsx_gateway_0=$gateway\" \
---prop:\"nsx_dns1_0=$dns\" --prop:\"nsx_domain_0=$domain\" \
---prop:\"nsx_ntp_0=$ntp\" --prop:nsx_isSSHEnabled=True --prop:nsx_allowSSHRootLogin=True \
---prop:\"nsx_passwd_0=$password\" --prop:\"nsx_cli_passwd_0=$password\" \
---prop:\"nsx_hostname=$name\" \"$NSX_MANAGER_OVA_FILE\" \
-vi://$host_username:$host_password@$host_ip/$host_datacenter/host/$host_cluster"
+#   cmd="ovftool --name=\"$name\" --X:injectOvfEnv --X:logFile=ovftool.log --X:logLevel=verbose \
+# --allowExtraConfig $overwrite --datastore=\"${DATASTORE}\" --network=\"$host_network\" \
+# --acceptAllEulas --noSSLVerify --diskMode=thin --powerOn --prop:\"nsx_ip_0=$ip\" \
+# --prop:\"nsx_netmask_0=$netmask\" --prop:\"nsx_gateway_0=$gateway\" \
+# --prop:\"nsx_dns1_0=$dns\" --prop:\"nsx_domain_0=$domain\" \
+# --prop:\"nsx_ntp_0=$ntp\" --prop:nsx_isSSHEnabled=True --prop:nsx_allowSSHRootLogin=True \
+# --prop:\"nsx_passwd_0=${PASSWORD}\" --prop:\"nsx_cli_passwd_0=${PASSWORD}\" \
+# --prop:\"nsx_hostname=$name\" \"$NSX_MANAGER_OVA_FILE\" \
+# vi://$host_username:${PASSWORD}@$host_ip/$host_datacenter/host/$host_cluster"
 
-  echo "Executing $cmd"
-  eval $cmd
+#   echo "Executing $cmd"
+#   eval $cmd
+
+  export MYSCRIPT=/tmp/$$
+
+  cat << EOF > ${MYSCRIPT}
+  export LANG=en_US.UTF-8
+  cd /root/cPodFactory/ovftool
+  ./ovftool --acceptAllEulas --X:injectOvfEnv --allowExtraConfig --powerOn  --sourceType=OVA  \
+  --X:logFile=/tmp/ovftool.log --X:logLevel=verbose --X:logTransferHeaderData \
+  --name=${NAME_NSX} --datastore=${DATASTORE} --noSSLVerify \
+  --diskMode=thin --net:"Network 1"="VM Network" \
+  --prop:nsx_passwd_0=${PASSWORD} \
+  --prop:nsx_cli_passwd_0=${PASSWORD} \
+  --prop:nsx_cli_audit_passwd_0=${PASSWORD} \
+  --prop:nsx_hostname=${HOSTNAME_NSX}.${DOMAIN} \
+  --prop:nsx_role="NSX Manager" \
+  --prop:nsx_ip_0=${NSX_MANAGER_IP} \
+  --prop:nsx_netmask_0=255.255.255.0 \
+  --prop:nsx_gateway_0=${GATEWAY} \
+  --prop:nsx_dns1_0=${DNS} \
+  --prop:nsx_domain_0=${DOMAIN} \
+  --prop:nsx_ntp_0=${GATEWAY} \
+  --prop:nsx_isSSHEnabled=True \
+  --prop:nsx_allowSSHRootLogin=True \
+  ${NSX_MANAGER_OVA_FILE} \
+  vi://${ADMIN}:'${PASSWORD}'@${TARGET}
+EOF
+
+  sh ${MYSCRIPT}
+
 }
 
 function install_nsx_controller {
@@ -230,12 +299,10 @@ function install_nsx_edge {
 --prop:\"nsx_ntp_0=$ntp\" --prop:nsx_isSSHEnabled=True --prop:nsx_allowSSHRootLogin=True \
 --prop:\"nsx_passwd_0=$password\" --prop:\"nsx_cli_passwd_0=$password\" \
 --prop:\"nsx_hostname=$name\" \"$NSX_EDGE_OVA_FILE\" \
-vi://$host_username:$host_password@$host_ip/$host_datacenter/host/$host_cluster"
+vi://$host_username:${PASSWORD}@$host_ip/$host_datacenter/host/$host_cluster"
   echo "Executing $cmd"
   eval $cmd
 }
-
-
 
 ######################################################
 #						     #
@@ -243,20 +310,21 @@ vi://$host_username:$host_password@$host_ip/$host_datacenter/host/$host_cluster"
 #						     #
 ######################################################
 
+#while getopts "h?s" opt; do
+#    case "$opt" in
+#    h|\?)
+#        print_help
+#        exit 0
+#        ;;
+#    s)  SMALL_MEMORY_OVA=1
+#    esac
+#done
 
-while getopts "h?s" opt; do
-    case "$opt" in
-    h|\?)
-        print_help
-        exit 0
-        ;;
-    s)  SMALL_MEMORY_OVA=1
-    esac
-done
+#shift $((OPTIND-1))
+#[ "$1" = "--" ] && shift
 
-shift $((OPTIND-1))
-[ "$1" = "--" ] && shift
-
+add_to_cpodrouter_hosts "${IP_NSXMGR}" "${HOSTNAME_NSX}"
+add_to_cpodrouter_hosts "${IP_NSXEDGE}" "${HOSTNAME_NSXEDGE}"
 
 echo ""
 echo "Installing NSX"
@@ -288,7 +356,7 @@ if [ "$SMALL_MEMORY_OVA" == "1" ]; then
 fi
 
 install_nsx_manager
-install_nsx_controller
+#install_nsx_controller
 install_nsx_edge
 
 

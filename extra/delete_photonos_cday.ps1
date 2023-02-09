@@ -11,6 +11,7 @@ $templateVM = "###TEMPLATE_VM###"
 $rootPasswd = "###ROOT_PASSWD###"
 $Datastore = "###DATASTORE###"
 
+Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false  -Confirm:$false
 Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false -DefaultVIServerMode multiple
 Connect-VIServer -Server $Vc -User $vcUser -Password $vcPass
 

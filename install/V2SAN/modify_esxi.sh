@@ -21,6 +21,6 @@ sed -i -e "s/###VCENTER###/${VCENTER}/" \
 -e "s/###VCENTER_CLUSTER###/${VCENTER_CLUSTER}/" \
 ${SCRIPT}
 
-docker run --rm --dns=${DNS} --entrypoint="/usr/bin/pwsh" -v /tmp/scripts:/tmp/scripts vmware/powerclicore:ubuntu16.04 ${SCRIPT}
-
+#docker run --rm --dns=${DNS} --entrypoint="/usr/bin/pwsh" -v /tmp/scripts:/tmp/scripts vmware/powerclicore:ubuntu16.04 ${SCRIPT}
+docker run --interactive --tty --dns=${DNS} --entrypoint="/usr/bin/pwsh" -v /tmp/scripts:/tmp/scripts vmware/powerclicore:12.4 ${SCRIPT}
 #rm -fr ${SCRIPT}

@@ -54,7 +54,7 @@ Function Set-MacLearn {
     foreach ($dvpgname in $DVPortgroupName) {
         $dvpg = Get-VDPortgroup -Name $dvpgname -ErrorAction SilentlyContinue
         $switchVersion = ($dvpg | Get-VDSwitch).Version
-        if($dvpg -and $switchVersion -eq "6.6.0") {
+        if($dvpg -and $switchVersion -ge "6.6.0") {
             $originalSecurityPolicy = $dvpg.ExtensionData.Config.DefaultPortConfig.SecurityPolicy
 
             $spec = New-Object VMware.Vim.DVPortgroupConfigSpec
@@ -121,8 +121,11 @@ switch ($Spec) {
 		Get-VDPortgroup $Portgroup | Get-VDUplinkTeamingPolicy | Set-VDUplinkTeamingPolicy -ActiveUplinkPort "uplink1" -StandbyUplinkPort "uplink2" -UnusedUplinkPort $unusedPortsList
 		Break
 	}
+	"LAB" {
+		Get-VDPortgroup $Portgroup | Get-VDUplinkTeamingPolicy | Set-VDUplinkTeamingPolicy -ActiveUplinkPort "Uplink 1" -StandbyUplinkPort "Uplink 2"
+		Break
+	}    
 }
-
 #Get-VDPortgroup $Portgroup | Get-VDSecurityPolicy | Set-VDSecurityPolicy -ForgedTransmits $true -AllowPromiscuous $false -MacChanges $true
 Set-MacLearn -DVPortgroupName @($Portgroup) -EnableMacLearn $true -EnablePromiscuous $false -EnableForgedTransmit $true -EnableMacChange $true
 #Get-VDPortgroup $Portgroup | Get-VDSecurityPolicy | Set-VDSecurityPolicy -ForgedTransmits $true -AllowPromiscuous $true -MacChanges $true

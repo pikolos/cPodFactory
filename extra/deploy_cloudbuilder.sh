@@ -84,7 +84,7 @@ if [ "${CLOUDBUILDER_PLACEMENT}" == "ATSIDE" ]; then
 	replace_json ${TEMP} "PropertyMapping" "Key" "guestinfo.DNS" "Value" "${DNS}"
 	replace_json ${TEMP} "PropertyMapping" "Key" "guestinfo.domain" "Value" "${DOMAIN}"
 	replace_json ${TEMP} "PropertyMapping" "Key" "guestinfo.searchpath" "Value" "${DOMAIN}"
-	replace_json ${TEMP} "PropertyMapping" "Key" "guestinfo.ntp" "Value" "${NTP}"
+	replace_json ${TEMP} "PropertyMapping" "Key" "guestinfo.ntp" "Value" "${GATEWAY}"
 	replace_json ${TEMP} "NetworkMapping" "Name" "Network 1" "Network" "${CPOD_PORTGROUP}"
 
 	export GOVC_NETWORK="${CPOD_PORTGROUP}"

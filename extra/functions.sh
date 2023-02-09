@@ -23,3 +23,46 @@ replace_json() {
 
 	cp ${1}-tmp ${1} ; rm ${1}-tmp
 }
+
+test_params_file() {
+	[ "$1" == "" ] && echo "usage: $0 <filename>" && exit 1 
+
+	FILELIST=$(cat ${1}  | grep "=/" | cut -d"=" -f2)
+	PROBLEM="none"
+	for FileToCheck in ${FILELIST}; do
+		if [ -f "$FileToCheck" ]; then
+			echo "	ok - ${FileToCheck}"
+		else
+			echo "	NOT FOUND - "$(cat ${1} | grep ${FileToCheck} )
+			PROBLEM="YES"
+		fi
+	done
+
+	TEMPLATENAME=$(cat ${1}  | grep "ESX" | cut -d"=" -f2)
+	TEMPLATE=$(govc ls /${VCENTER_DATACENTER}/vm/${TEMPLATE_FOLDER}/${TEMPLATENAME})
+	if [ "${TEMPLATE}" == "" ]; then
+		echo "	Template ${TEMPLATENAME} not found"
+		PROBLEM="YES"
+	else
+		echo "	ok - Template ${TEMPLATENAME}"
+	fi
+
+	if [ ${PROBLEM} == "YES" ]; then
+		exit 1
+	fi
+}
+
+add_to_cpodrouter_dnsmasq() {
+	# ${1} : line to add to dnsmasq
+	# ${2} : cpod_name_lower
+
+	echo "add ${1} to ${2}"
+	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "sed "/${1}/d" -i /etc/dnsmasq.conf ; printf \"${1}\n\" >> /etc/dnsmasq.conf"
+	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "systemctl restart dnsmasq.service"
+}
+
+add_to_cpodrouter_hosts() {
+	echo "add ${1} -> ${2}"
+	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
+	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "systemctl restart dnsmasq.service"
+}

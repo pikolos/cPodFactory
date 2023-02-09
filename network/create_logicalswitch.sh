@@ -24,9 +24,16 @@ case $BACKEND_NETWORK in
 		echo "Logical Switch '${2}' does not seem to be created." && exit 1
 
 		;;
-        "NSX-T")
-		curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" --data  "{\"display_name\":\"${2}\",\"transport_zone_path\":\"/infra/sites/default/enforcement-points/default/transport-zones/${NSX_TRANSPORTZONE_ID}\",\"vlan_ids\":[\"0-4094\"]}" https://${NSX}/policy/api/v1/infra/segments/${2} 2>&1 > /dev/null
-		curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" -d "{\"spoofguard_profile_path\":\"/infra/spoofguard-profiles/default-spoofguard-profile\",\"segment_security_profile_path\":\"/infra/segment-security-profiles/cpod-segment-security-profile\",\"resource_type\":\"SegmentSecurityProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-security-profile-binding-maps/segment_security_binding_map_${2} 2>&1 > /dev/null
-		curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" -d "{\"mac_discovery_profile_path\":\"/infra/mac-discovery-profiles/cpod-mac-discovery-profile\",\"ip_discovery_profile_path\":\"/infra/ip-discovery-profiles/cpod-ip-discovery-profile\",\"resource_type\":\"SegmentDiscoveryProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-discovery-profile-binding-maps/segment_discovery_binding_map_${2} 2>&1 > /dev/null
-                ;;
+    "NSX-T")
+		if [ "${NSXTVIDM}" == "YES" ]; then
+			REMOTE64=$(echo -n "${NSX_ADMIN}:${NSX_PASSWD}" | base64 )
+			curl -s -k -H "Authorization: Remote ${REMOTE64}" -X PUT -H "Content-Type: application/json" --data  "{\"display_name\":\"${2}\",\"transport_zone_path\":\"/infra/sites/default/enforcement-points/default/transport-zones/${NSX_TRANSPORTZONE_ID}\",\"vlan_ids\":[\"0-4094\"]}" https://${NSX}/policy/api/v1/infra/segments/${2} 2>&1 > /dev/null
+			curl -s -k -H "Authorization: Remote ${REMOTE64}" -X PUT -H "Content-Type: application/json" -d "{\"spoofguard_profile_path\":\"/infra/spoofguard-profiles/default-spoofguard-profile\",\"segment_security_profile_path\":\"/infra/segment-security-profiles/cpod-segment-security-profile\",\"resource_type\":\"SegmentSecurityProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-security-profile-binding-maps/segment_security_binding_map_${2} 2>&1 > /dev/null
+			curl -s -k -H "Authorization: Remote ${REMOTE64}" -X PUT -H "Content-Type: application/json" -d "{\"mac_discovery_profile_path\":\"/infra/mac-discovery-profiles/cpod-mac-discovery-profile\",\"ip_discovery_profile_path\":\"/infra/ip-discovery-profiles/cpod-ip-discovery-profile\",\"resource_type\":\"SegmentDiscoveryProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-discovery-profile-binding-maps/segment_discovery_binding_map_${2}  2>&1 > /dev/null
+		else
+			curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" --data  "{\"display_name\":\"${2}\",\"transport_zone_path\":\"/infra/sites/default/enforcement-points/default/transport-zones/${NSX_TRANSPORTZONE_ID}\",\"vlan_ids\":[\"0-4094\"]}" https://${NSX}/policy/api/v1/infra/segments/${2} 2>&1 > /dev/null
+			curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" -d "{\"spoofguard_profile_path\":\"/infra/spoofguard-profiles/default-spoofguard-profile\",\"segment_security_profile_path\":\"/infra/segment-security-profiles/cpod-segment-security-profile\",\"resource_type\":\"SegmentSecurityProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-security-profile-binding-maps/segment_security_binding_map_${2} 2>&1 > /dev/null
+			curl -s -k -u ${NSX_ADMIN}:${NSX_PASSWD} -X PUT -H "Content-Type: application/json" -d "{\"mac_discovery_profile_path\":\"/infra/mac-discovery-profiles/cpod-mac-discovery-profile\",\"ip_discovery_profile_path\":\"/infra/ip-discovery-profiles/cpod-ip-discovery-profile\",\"resource_type\":\"SegmentDiscoveryProfileBindingMap\"}" https://${NSX}/policy/api/v1/infra/segments/${2}/segment-discovery-profile-binding-maps/segment_discovery_binding_map_${2} 2>&1 > /dev/null
+		fi
+		;;
 esac

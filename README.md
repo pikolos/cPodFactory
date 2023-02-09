@@ -16,4 +16,6 @@ Powered by vSphere. Don't use it for production environment.
 
 The solely purpose is labs.
 
-Check out the [LICENSE](https://github.com/bdereims/cPodFactory/blob/master/LICENSE)
+Check out the [LICENSE](./LICENSE)
+
+User manual : [HELP](./usermanual.md)

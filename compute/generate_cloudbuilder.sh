@@ -17,7 +17,7 @@ add_to_cpodrouter_hosts() {
 #JSON_TEMPLATE=cloudbuilder-401.json
 #JSON_TEMPLATE=cloudbuilder-43.json
 JSON_TEMPLATE=${JSON_TEMPLATE:-"cloudbuilder-43.json"}
-JSON_TEMPLATE=cloudbuilder-43.json
+#JSON_TEMPLATE=cloudbuilder-43.json
 DNSMASQ_TEMPLATE=dnsmasq.conf-vcf
 BGPD_TEMPLATE=bgpd.conf-vcf
 
@@ -32,6 +32,13 @@ VLAN_SHIFT=$( expr ${VLAN} + ${VLAN_SHIFT} )
 if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 	VLAN_MGMT="0"
 fi
+
+if ($VLAN -gt 40) {
+	$VLANID = $VLAN + $num
+}else{
+	$VLANID = $VLAN + "{0:D2}" -f $num
+}
+
 
 PASSWORD=$( ${EXTRA_DIR}/passwd_for_cpod.sh ${CPOD_NAME} ) 
 
@@ -56,7 +63,6 @@ sed -i -e "s/###SUBNET###/${SUBNET}/g" \
 -e "s/###LIC_VCSA###/${LIC_VCSA}/g" \
 -e "s/###LIC_VSAN###/${LIC_VSAN}/g" \
 -e "s/###LIC_NSXT###/${LIC_NSXT}/g" \
--e "s/###VLAN_SHIFT###/${VLAN_SHIFT}/g" \
 ${SCRIPT}
 
 # Generate DNSMASQ conf file
@@ -65,13 +71,8 @@ sed -i -e "s/###SUBNET###/${SUBNET}/g" \
 -e "s/###VLAN###/${VLAN}/g" \
 -e "s/###CPOD###/${NAME_LOWER}/g" \
 -e "s/###DOMAIN###/${ROOT_DOMAIN}/g" \
--e "s/###LIC_ESX###/${LIC_ESX}/g" \
--e "s/###LIC_VCSA###/${LIC_VCSA}/g" \
--e "s/###LIC_VSAN###/${LIC_VSAN}/g" \
--e "s/###LIC_NSXT###/${LIC_NSXT}/g" \
 -e "s/###ROOT_DOMAIN###/${ROOT_DOMAIN}/g" \
 -e "s/###TRANSIT_GW###/${TRANSIT_GW}/g" \
--e "s/###VLAN_SHIFT###/${VLAN_SHIFT}/g" \
 ${DNSMASQ}
 
 # Generate BGPD conf file
@@ -79,8 +80,7 @@ sed -i -e "s/###VLAN###/${VLAN}/g" \
 -e "s/###ASN###/${ASN}/g" \
 -e "s/###HEADER_ASN###/${HEADER_ASN}/g" \
 -e "s/###TRANSIT_GW###/${TRANSIT_GW}/g" \
--e "s/###TRANSIT_SUBNET###/${TRANSIT_SUBNET}/g" \
--e "s/###VLAN_SHIFT###/${VLAN_SHIFT}/g" \
+-e "s/###TRANSIT_NET###/${TRANSIT_NET}/g" \
 ${BGPD}
 
 echo "Modifying dnsmasq on cpodrouter."
@@ -111,10 +111,35 @@ read answer
 curl -i -k -u admin:${PASSWORD} -H 'Content-Type: application/json' -H 'Accept: application/json' -d @${SCRIPT} -X POST https://cloudbuilder.${NAME_LOWER}.${ROOT_DOMAIN}/v1/sddcs/validations
 echo ""
 echo ""
-echo "Check prereqs in CloudBuilder."
+echo "Check prereqs in CloudBuilder:"
+echo "check url : https://cloudbuilder.${NAME_LOWER}.${ROOT_DOMAIN}"
+echo "using pwd : ${PASSWORD}"
+echo 
+echo "when validation confirmed,"
 echo "Hit enter or ctrl-c to launch deployment:"
 read answer
 curl -i -k -u admin:${PASSWORD} -H 'Content-Type: application/json' -H 'Accept: application/json' -d @${SCRIPT} -X POST https://cloudbuilder.${NAME_LOWER}.${ROOT_DOMAIN}/v1/sddcs
+echo ""
+echo "Check deployment in CloudBuilder:"
+echo "check url : https://cloudbuilder.${NAME_LOWER}.${ROOT_DOMAIN}"
+echo "using pwd : ${PASSWORD}"
+echo
+echo "when deployment finished, please manually edit sddc properties as follows:"
+echo "ssh vcf@sddc.${NAME_LOWER}.${ROOT_DOMAIN}"
+echo "su -"
+echo "pwd = ${PASSWORD}"
+echo "DOMAINMGR=$(find / -name application-pro* | grep domainmanager)"
+echo 'echo "nsxt.manager.formfactor=small" >> $DOMAINMGR'
+echo 'echo "nsxt.management.resources.validation.skip=true" >> $DOMAINMGR'
+echo 'echo "vc.deployment.option=management-tiny" >> $DOMAINMGR'
+
+echo "verify the 2 lines have been added as expected"
+echo 'cat $DOMAINMGR'
+echo "restart service :"
+echo "systemctl restart domainmanager"
+echo "exit"
+echo "exit"
+
 
 # Delete a failed deployment
 # curl -X GET http://localhost:9080/bringup-app/bringup/sddcs/test/deleteAll

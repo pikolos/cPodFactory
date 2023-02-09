@@ -11,7 +11,7 @@ CPOD_H=$( echo ${1} | tr '[:lower:]' '[:upper:]' )
 HEADER_L=$( echo ${HEADER} | tr '[:upper:]' '[:lower:]' )
 CPOD_L=$( echo ${CPOD_L} | sed "s/${HEADER_L}-//" )
 
-CONF=$( grep "cpod-${CPOD_L}." ${DNSMASQ} )
+CONF=$( grep --fixed-strings "cpod-${CPOD_L}." ${DNSMASQ} )
 [ $? -ne 0 ] && echo "error: cPod ${1} not found!" && exit 1
 	
 TRANSIT_IP=$( echo ${CONF} | sed 's!^.*/!!' | sort | tail -n 1 )
@@ -20,7 +20,7 @@ if [ "${2}" == "ontransit" ]; then
 	echo "${TRANSIT_IP}"
 else	
 	TMP=$( echo ${TRANSIT_IP} | sed 's/.*\.//' )
-	TMP=$( expr $TMP - 10 )
+#	TMP=$( expr $TMP - 10 )
 
 	echo "${TRANSIT}.${TMP}"
 fi

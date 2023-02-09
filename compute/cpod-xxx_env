@@ -43,10 +43,15 @@ export TARGET_VCSA=${SUBNET}.21
 export DATASTORE_VCSA=Datastore
 export PORTGROUP_VCSA="VM Network"
 
-export HOSTNAME_NSX=nsx.${DOMAIN}
-export NAME_NSX=NSX-V
-export IP_NSX=${SUBNET}.4
-export OVA_NSX=${BITS}/VMware-NSX-Manager-6.4.4-11197766.ova
+export HOSTNAME_NSX=nsx
+export NAME_NSX=NSX-MGR
+export IP_NSXMGR=${SUBNET}.5
+#export OVA_NSXMGR=${BITS}/nsx-unified-appliance-3.1.3.7.0.19380482.ova
+
+export HOSTNAME_NSXEDGE=nsxedge.${DOMAIN}
+export NAME_NSXEDGE=NSX-EDGE
+export IP_NSXEDGE=${SUBNET}.9
+export OVA_NSXEDGE=${BITS}/nsx-edge-3.1.3.7.0.19380486.ova
 
 #export HOSTNAME_VCSA=vcsa
 #export NAME_VCSA=VCSA
@@ -71,6 +76,10 @@ export OVA_PHOTONOS=${BITS}/photon-hw11-3.0-9355405.ova
 export HOSTNAME_FORTYTWO=forty-two
 export NAME_FORTYTWO=FORTY-TWO
 export OVA_FORTYTWO=${BITS}/template-FORTY-TWO.ova
+
+export HOSTNAME_FORTYTHREE=forty-three
+export NAME_FORTYTHREE=FORTY-THREE
+export OVA_FORTYTHREE=${BITS}/template-FORTY-THREE.ova
 
 export HOSTNAME_GREASEMONKEY=grease-monkey
 export NAME_GREASEMONKEY=GREASE-MONKEY
@@ -123,5 +132,19 @@ export OVA_RIFT=${BITS}/template-RIFT.ova
 export HOSTNAME_CLOUDBUILDER=cloudbuilder
 export NAME_CLOUDBUILDER=CLOUDBUILDER
 #export OVA_CLOUDBUILDER=${BITS}/VMware-Cloud-Builder-4.2.1.0-18016307_OVF10.ova
-export OVA_CLOUDBUILDER=${BITS}/VMware-Cloud-Builder-4.3.1.0-18624509_OVF10.ova
+#export OVA_CLOUDBUILDER=${BITS}/VMware-Cloud-Builder-4.3.1.0-18624509_OVF10.ova
 export IP_CLOUDBUILDER=${SUBNET}.3
+
+export HOSTNAME_SIVT=sivt
+export NAME_SIVT=SIVT
+#export OVA_SIVT=${BITS}/service-installer-for-vmware-tanzu-1.3.1.70-20308831_ovf10.ova
+export IP_SIVT=${SUBNET}.9
+
+export HOSTNAME_TKGIMC=tkgimc
+export NAME_TKGIMC=TKGIMC
+#export OVA_TKGIMC=${BITS}/tkgi-v1.15.0-rev.1-cda074e3-20469580.ova
+export IP_TKGIMC=${SUBNET}.10
+
+export HOSTNAME_NSXALB=nsxalb01
+export NAME_NSXALB=NSXALBMGR
+export IP_NSXALBMGR=${SUBNET}.50

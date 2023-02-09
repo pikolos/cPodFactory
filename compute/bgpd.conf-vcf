@@ -12,7 +12,7 @@ enable password VMw@re1!
 !
 router bgp ###HEADER_ASN######VLAN###
 network 0.0.0.0/0
-bgp router-id ###TRANSIT_SUBNET###.###VLAN###
+bgp router-id ###TRANSIT_NET###.###VLAN###
 neighbor ###TRANSIT_GW### remote-as ###ASN### 
 neighbor 10.###VLAN###.4.2 remote-as 65501
 neighbor 10.###VLAN###.4.2 default-originate

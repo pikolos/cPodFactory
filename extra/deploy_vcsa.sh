@@ -134,7 +134,7 @@ do
 	if [ "${STATUS}" == "RUNNING" ] && [ ${ONCE} -eq 0 ]; then
 		ONCE=1
 		./extra/post_slack.sh ":speech_balloon: You can follow vCenter deployment through <https://vcsa.${DOMAIN}:5480|VCSA admin URL> for cPod *${1}*"
-		echo "Follow the deploynenet trough https://vcsa.${DOMAIN}:5480"
+		echo "Follow the deployment trough https://vcsa.${DOMAIN}:5480"
 	fi
 done	
 

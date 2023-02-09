@@ -18,7 +18,7 @@ export ADDRIP
 
 case $WHERE in
 	"172.16.100.50/22")
-		ALL_CLUSTER=(dell)
+		ALL_CLUSTER=(lab)
 		;;
 	"172.16.100.20/22")
 		ALL_CLUSTER=(fkd)
@@ -29,8 +29,14 @@ case $WHERE in
 	"172.17.111.169/16")
 		ALL_CLUSTER=(techdata)
 		;;
-	"10.197.107.181/24")
+	"10.202.121.120/24")
 		ALL_CLUSTER=(stc)
+		;;
+	"10.197.96.201/24")
+		ALL_CLUSTER=(wdc)
+		;;
+	"172.16.100.155/24")
+		ALL_CLUSTER=(lhr)
 		;;
 esac
 
