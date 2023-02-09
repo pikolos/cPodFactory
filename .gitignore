@@ -26,3 +26,9 @@ install/containers/docker-strongswan/config/ipsec.d/*
 install/containers/docker-strongswan/config/ipsec.secrets
 cloudbuilder.json
 *.ova
+*.openvpn
+.DS_Store
+*.ovpn
+CPODFACTORY-ENVIRONMENTS-BACKUP/*
+vcf*.sh
+vsphere*.sh
