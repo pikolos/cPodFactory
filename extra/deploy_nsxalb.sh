@@ -18,10 +18,6 @@ START=$( date +%s )
 
 [ "$1" == "" -o "$2" == ""  ] && echo "usage: $0 <name_of_cpod> <name_of_owner>"  && echo "usage example: $0 LAB01 vedw" && exit 1
 
-
-[ "${HOSTNAME_NSXALB}" == ""  -o "${NSXALBOVA}" == "" -o "${IP_NSXALBMGR}" == "" ] && echo "missing parameters - please source version file !" && exit 1
-
-
 if [ -f "${1}" ]; then
         . ./${COMPUTE_DIR}/"${1}"
 else
@@ -34,6 +30,7 @@ else
         . ./${COMPUTE_DIR}/cpod-xxx_env
 fi
 
+[ "${HOSTNAME_NSXALB}" == ""  -o "${NSXALBOVA}" == "" -o "${IP_NSXALBMGR}" == "" ] && echo "missing parameters - please source version file !" && exit 1
 
 ### functions ####
 
