@@ -33,7 +33,11 @@ if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 	VLAN_MGMT="0"
 fi
 
-
+if [ ${VLAN} -gt 40 ]; then
+	VLANID=${VLAN}3
+else
+	VLANID=${VLAN}03
+fi
 PASSWORD=$( ${EXTRA_DIR}/passwd_for_cpod.sh ${CPOD_NAME} ) 
 
 SCRIPT_DIR=/tmp/scripts
@@ -63,6 +67,7 @@ ${SCRIPT}
 sed -i -e "s/###SUBNET###/${SUBNET}/g" \
 -e "s/###PASSWORD###/${PASSWORD}/" \
 -e "s/###VLAN###/${VLAN}/g" \
+-e "s/###VLANID###/${VLANID}/g" \
 -e "s/###CPOD###/${NAME_LOWER}/g" \
 -e "s/###DOMAIN###/${ROOT_DOMAIN}/g" \
 -e "s/###ROOT_DOMAIN###/${ROOT_DOMAIN}/g" \
