@@ -33,12 +33,6 @@ if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 	VLAN_MGMT="0"
 fi
 
-if ($VLAN -gt 40) {
-	$VLANID = $VLAN + $num
-}else{
-	$VLANID = $VLAN + "{0:D2}" -f $num
-}
-
 
 PASSWORD=$( ${EXTRA_DIR}/passwd_for_cpod.sh ${CPOD_NAME} ) 
 
@@ -87,7 +81,7 @@ echo "Modifying dnsmasq on cpodrouter."
 scp ${DNSMASQ} ${NAME_LOWER}:/etc/dnsmasq.conf
 
 echo "Modifying bgpd on cpodrouter."
-scp ${BGPD} ${NAME_LOWER}:/etc/quagga/bgpd.conf
+#scp ${BGPD} ${NAME_LOWER}:/etc/quagga/bgpd.conf
 
 echo "Adding entries into hosts of ${NAME_LOWER}."
 add_to_cpodrouter_hosts "${SUBNET}.3" "cloudbuilder"
