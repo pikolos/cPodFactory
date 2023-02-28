@@ -42,15 +42,37 @@ fi
 if [ ${WLDVLAN} -gt 40 ]; then
 	VMOTIONVLANID=${WLDVLAN}1
 	VSANVLANID=${WLDVLAN}2
+	VLANID=${WLDVLAN}3
 else
 	VMOTIONVLANID=${WLDVLAN}01
 	VSANVLANID=${WLDVLAN}02
+	VLANID=${WLDVLAN}03
 fi
 
 SCRIPT_DIR=/tmp/scripts
 mkdir -p ${SCRIPT_DIR} 
 NPSCRIPT=/tmp/scripts/cloudbuilder-networkpool-${NAME_LOWER}.json
+
 cp ${COMPUTE_DIR}/${NP_JSON_TEMPLATE} ${NPSCRIPT} 
+
+DNSMASQ_TEMPLATE=dnsmasq.conf-vcf
+DNSMASQ=/tmp/scripts/dnsmasq-${NAME_LOWER}.conf
+cp ${COMPUTE_DIR}/${DNSMASQ_TEMPLATE} ${DNSMASQ} 
+
+# Generate DNSMASQ conf file
+sed -i -e "s/###SUBNET###/${WLDSUBNET}/g" \
+-e "s/###VLAN###/${WLDVLAN}/g" \
+-e "s/###VLANID###/${VLANID}/g" \
+-e "s/###CPOD###/${WLDNAME_LOWER}/g" \
+-e "s/###DOMAIN###/${ROOT_DOMAIN}/g" \
+-e "s/###ROOT_DOMAIN###/${ROOT_DOMAIN}/g" \
+-e "s/###TRANSIT_GW###/${TRANSIT_GW}/g" \
+${DNSMASQ}
+
+echo "Modifying dnsmasq on WLD cpodrouter."
+scp ${DNSMASQ} ${WLDNAME_LOWER}:/etc/dnsmasq.conf
+ssh -o LogLevel=error ${WLDNAME_LOWER} "systemctl restart dnsmasq"
+
 
 NPPOOLNAME="np-"${WLDNAME_LOWER}
 # Generate JSON for cloudbuilder

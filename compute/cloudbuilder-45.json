@@ -47,7 +47,7 @@
       "networkType": "VMOTION",
       "subnet": "10.###VLAN###.1.0/24",
       "gateway": "10.###VLAN###.1.1",
-      "vlanId": "###VLAN###01",
+      "vlanId": "###VMOTIONVLANID###",
       "mtu": "1500",
       "portGroupKey": "cl01-vds01-pg-vmotion",
       "association": "dc01",
@@ -67,7 +67,7 @@
       "networkType": "VSAN",
       "subnet": "10.###VLAN###.2.0/24",
       "gateway": "10.###VLAN###.2.1",
-      "vlanId": "###VLAN###02",
+      "vlanId": "###VSANVLANID###",
       "mtu": "1500",
       "portGroupKey": "cl01-vds01-pg-vsan",
       "includeIpAddressRanges": [
@@ -115,7 +115,7 @@
     "vip": "###SUBNET###.5",
     "vipFqdn": "nsx01",
     "nsxtLicense": "###LIC_NSXT###",
-    "transportVlanId": "###VLAN###03"
+    "transportVlanId": "###TRANSPORTVLANID###"
   },
   "vsanSpec": {
     "vsanName": "vsan-1",

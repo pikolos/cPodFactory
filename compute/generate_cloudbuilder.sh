@@ -34,10 +34,15 @@ if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 fi
 
 if [ ${VLAN} -gt 40 ]; then
-	VLANID=${VLAN}3
+	VMOTIONVLANID=${VLAN}1
+	VSANVLANID=${VLAN}2
+	TRANSPORTVLANID=${VLAN}3
 else
-	VLANID=${VLAN}03
+	VMOTIONVLANID=${VLAN}01
+	VSANVLANID=${VLAN}02
+	TRANSPORTVLANID=${VLAN}03
 fi
+
 PASSWORD=$( ${EXTRA_DIR}/passwd_for_cpod.sh ${CPOD_NAME} ) 
 
 SCRIPT_DIR=/tmp/scripts
@@ -54,6 +59,9 @@ cp ${COMPUTE_DIR}/${BGPD_TEMPLATE} ${BGPD}
 sed -i -e "s/###SUBNET###/${SUBNET}/g" \
 -e "s/###PASSWORD###/${PASSWORD}/" \
 -e "s/###VLAN###/${VLAN}/g" \
+-e "s/###VMOTIONVLANID###/${VMOTIONVLANID}/g" \
+-e "s/###VSANVLANID###/${VSANVLANID}/g" \
+-e "s/###TRANSPORTVLANID###/${TRANSPORTVLANID}/g" \
 -e "s/###VLAN_MGMT###/${VLAN_MGMT}/g" \
 -e "s/###CPOD###/${NAME_LOWER}/g" \
 -e "s/###DOMAIN###/${ROOT_DOMAIN}/g" \
@@ -67,7 +75,7 @@ ${SCRIPT}
 sed -i -e "s/###SUBNET###/${SUBNET}/g" \
 -e "s/###PASSWORD###/${PASSWORD}/" \
 -e "s/###VLAN###/${VLAN}/g" \
--e "s/###VLANID###/${VLANID}/g" \
+-e "s/###VLANID###/${TRANSPORTVLANID}/g" \
 -e "s/###CPOD###/${NAME_LOWER}/g" \
 -e "s/###DOMAIN###/${ROOT_DOMAIN}/g" \
 -e "s/###ROOT_DOMAIN###/${ROOT_DOMAIN}/g" \
@@ -127,7 +135,7 @@ echo "when deployment finished, please manually edit sddc properties as follows:
 echo "ssh vcf@sddc.${NAME_LOWER}.${ROOT_DOMAIN}"
 echo "su -"
 echo "pwd = ${PASSWORD}"
-echo "DOMAINMGR=$(find / -name application-pro* | grep domainmanager)"
+echo 'DOMAINMGR=$(find /etc -name application-pro* | grep domainmanager)'
 echo 'echo "nsxt.manager.formfactor=small" >> $DOMAINMGR'
 echo 'echo "nsxt.management.resources.validation.skip=true" >> $DOMAINMGR'
 echo 'echo "vc.deployment.option=management-tiny" >> $DOMAINMGR'
