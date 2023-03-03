@@ -89,4 +89,5 @@ get_last_ip() {
 	SUBNET=${1}
 	CPOD=${2}
 	LASTIP=$(ssh -o LogLevel=error ${CPOD} "cat /etc/hosts | grep ${SUBNET}" | awk '{print $1}' | sort -t . -k 2,2n -k 3,3n -k 4,4n | tail -n 1 | cut -d "." -f 4)
+	echo $LASTIP
 }
