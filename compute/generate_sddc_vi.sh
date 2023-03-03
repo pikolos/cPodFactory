@@ -36,7 +36,7 @@ if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 	VLAN_MGMT="0"
 fi
 
-if [ ${WLDVLAN} -gt 40 ]; th
+if [ ${WLDVLAN} -gt 40 ]; then
 	VMOTIONVLANID=${WLDVLAN}1
 	VSANVLANID=${WLDVLAN}2
 	VLANID=${WLDVLAN}3
