@@ -9,10 +9,7 @@
 
 [ "$1" == "" -o "$2" == ""  ] && echo "usage: $0 <name_of_vcf_cpod> <name_of_wld_cpod>"  && echo "usage example: $0 vcf45 vcf45-wld01" && exit 1
 
-add_to_cpodrouter_hosts() {
-	echo "add ${1} -> ${2}"
-	ssh -o LogLevel=error ${NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
-}
+source ./extra/functions
 
 NP_JSON_TEMPLATE=cloudbuilder-networkpool.json
 NEWHOSTS_JSON_TEMPLATE=cloudbuilder-hosts.json
@@ -39,7 +36,7 @@ if [ ${BACKEND_NETWORK} != "VLAN" ]; then
 	VLAN_MGMT="0"
 fi
 
-if [ ${WLDVLAN} -gt 40 ]; then
+if [ ${WLDVLAN} -gt 40 ]; th
 	VMOTIONVLANID=${WLDVLAN}1
 	VSANVLANID=${WLDVLAN}2
 	VLANID=${WLDVLAN}3
@@ -219,21 +216,27 @@ echo ${VALIDATIONRESULT} | jq .
 
 exit
 
-echo "Adding entries into hosts of ${NAME_LOWER}."
-IPADDRESS=$((${WLDVLAN}+0))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "vcsa-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+1))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+2))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01a-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+3))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01b-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+4))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01c-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+5))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "en01-"${WLDCPOD_NAME}
-IPADDRESS=$((${WLDVLAN}+6))
-add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "en02-"${WLDCPOD_NAME}
+echo "Adding host entries into hosts of ${NAME_LOWER}."
+
+LASTIP=$(get_last_ip  ${SUBNET}  ${NAME_LOWER})
+IPADDRESS=$((${LASTIP}+1))
+add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "vcsa-"${WLDCPOD_NAME} ${NAME_LOWER} 
+IPADDRESS=$((${IPADDRESS}+1))
+add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01-"${WLDCPOD_NAME} ${NAME_LOWER} 
+IPADDRESS=$((${IPADDRESS}+1))
+add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01a-"${WLDCPOD_NAME} ${NAME_LOWER} 
+IPADDRESS=$((${IPADDRESS}+1))
+add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01b-"${WLDCPOD_NAME} ${NAME_LOWER} 
+IPADDRESS=$((${IPADDRESS}+1))
+add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01c-"${WLDCPOD_NAME} ${NAME_LOWER} 
+
+echo "Adding host entries into hosts of ${WLDNAME_LOWER}."
+
+LASTIP=$(get_last_ip  ${WLDSUBNET}  ${WLDNAME_LOWER})
+IPADDRESS=$((${LASTIP}+1))
+add_to_cpodrouter_hosts "${WLDSUBNET}.${IPADDRESS}" "en01-"${WLDCPOD_NAME} ${WLDNAME_LOWER} 
+IPADDRESS=$((${IPADDRESS}+1))
+add_to_cpodrouter_hosts "${WLDSUBNET}.${IPADDRESS}" "en02-"${WLDCPOD_NAME} ${WLDNAME_LOWER} 
 
 
 

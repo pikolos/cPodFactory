@@ -35,10 +35,10 @@ TIME=$( expr ${END} - ${START} )
 
 echo
 echo "==============================================="
-echo "===  user created                           ==="
-echo "===  In ${TIME} Seconds                     ==="
+echo "===  user created"
+echo "===  In ${TIME} Seconds"
 echo "==============================================="
-echo "===  user name : $1                    ==="
-echo "===  user password : ${GEN_PASSWORD}     ==="
-echo "===  user home directory : /home/$1 ==="
+echo "===  user name : $1"
+echo "===  user password : ${GEN_PASSWORD}"
+echo "===  user home directory : /home/$1"
 echo "==============================================="

@@ -19,12 +19,7 @@ fi
 
 ### functions ####
 
-add_to_cpodrouter_hosts() {
-	echo "add ${1} -> ${2}"
-	ssh -o LogLevel=error ${NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
-	ssh -o LogLevel=error ${NAME_LOWER} "systemctl restart dnsmasq.service"
-}
-
+source ./extra/functions
 
 ### Local vars ####
 
@@ -32,8 +27,6 @@ $Vc = "###VCENTER###"
 $vcUser = "###VCENTER_ADMIN###"
 $vcPass = '###VCENTER_PASSWD###'
 $vlan = '###VLAN###'
-
-
 
 HOSTNAME=${HOSTNAME_SIVT}
 NAME=${NAME_SIVT}

@@ -72,7 +72,7 @@ EOF
 sh ${MYSCRIPT}
 
 echo "Adding entries into hosts of ${CPOD_NAME_LOWER}."
-add_to_cpodrouter_hosts ${IP} ${HOSTNAME}
+add_to_cpodrouter_hosts ${IP} ${HOSTNAME} ${CPOD_NAME_LOWER}
 
 echo "script path :  ${MYSCRIPT}"
 #rm ${MYSCRIPT}

@@ -62,7 +62,30 @@ add_to_cpodrouter_dnsmasq() {
 }
 
 add_to_cpodrouter_hosts() {
-	echo "add ${1} -> ${2}"
-	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
-	ssh -o LogLevel=error ${CPOD_NAME_LOWER} "systemctl restart dnsmasq.service"
+	# ${1} : ip address to add
+	# ${2} : host record to add
+	# ${3} : cpod_name_lower to add to
+
+	echo "add ${1} -> ${2} in ${3}"
+	ssh -o LogLevel=error ${3} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
+	ssh -o LogLevel=error ${3} "systemctl restart dnsmasq.service"
+}
+
+enable_dhcp_cpod_vlanx() {
+	# ${1} : internal cpod vlan (1-8) to enable dhcp on
+	# ${2} : cpod_name_lower
+	# example : enable_dhcp_cpod_vlanx 2 cpod-demo.az-stc.cloud-garage.net
+
+	
+	#dhcp-range=eth2.1047:eth2,10.104.7.2,10.104.7.254,255.255.255.0,12h
+	#dhcp-option=eth2.1047:eth2,option:router,10.104.7.1
+}
+
+get_last_ip() {
+	# ${1} : subnet
+	# ${2} : cpod_name_lower to query
+
+	SUBNET=${1}
+	CPOD=${2}
+	LASTIP=$(ssh -o LogLevel=error ${CPOD} "cat /etc/hosts | grep ${SUBNET}" | awk '{print $1}' | sort -t . -k 2,2n -k 3,3n -k 4,4n | tail -n 1 | cut -d "." -f 4)
 }
