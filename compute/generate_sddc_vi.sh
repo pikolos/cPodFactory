@@ -9,7 +9,7 @@
 
 [ "$1" == "" -o "$2" == ""  ] && echo "usage: $0 <name_of_vcf_cpod> <name_of_wld_cpod>"  && echo "usage example: $0 vcf45 vcf45-wld01" && exit 1
 
-source ./extra/functions
+source ./extra/functions.sh
 
 NP_JSON_TEMPLATE=cloudbuilder-networkpool.json
 NEWHOSTS_JSON_TEMPLATE=cloudbuilder-hosts.json
@@ -214,10 +214,7 @@ echo "Getting list of unassigned hosts"
 VALIDATIONRESULT=$(curl -s -k -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" -X GET  'https://sddc.'${NAME_LOWER}.${ROOT_DOMAIN}'/v1/hosts?status=UNASSIGNED_USEABLE')
 echo ${VALIDATIONRESULT} | jq .
 
-exit
-
 echo "Adding host entries into hosts of ${NAME_LOWER}."
-
 LASTIP=$(get_last_ip  ${SUBNET}  ${NAME_LOWER})
 IPADDRESS=$((${LASTIP}+1))
 add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "vcsa-"${WLDCPOD_NAME} ${NAME_LOWER} 
@@ -231,7 +228,6 @@ IPADDRESS=$((${IPADDRESS}+1))
 add_to_cpodrouter_hosts "${SUBNET}.${IPADDRESS}" "nsx01c-"${WLDCPOD_NAME} ${NAME_LOWER} 
 
 echo "Adding host entries into hosts of ${WLDNAME_LOWER}."
-
 LASTIP=$(get_last_ip  ${WLDSUBNET}  ${WLDNAME_LOWER})
 IPADDRESS=$((${LASTIP}+1))
 add_to_cpodrouter_hosts "${WLDSUBNET}.${IPADDRESS}" "en01-"${WLDCPOD_NAME} ${WLDNAME_LOWER} 
@@ -239,7 +235,3 @@ IPADDRESS=$((${IPADDRESS}+1))
 add_to_cpodrouter_hosts "${WLDSUBNET}.${IPADDRESS}" "en02-"${WLDCPOD_NAME} ${WLDNAME_LOWER} 
 
 
-
-	
-#jq --argjson hostInfo "$(<cloudbuilder-vi-host-template.json)" '.computeSpec.clusterSpecs[].hostSpecs[] += [$hostInfo]' cloudbuilder-domains.json
-#jq --argjson hostInfo "$(<cloudbuilder-vi-host-template.json)" '.computeSpec.clusterSpecs[].hostSpecs += [$hostInfo]' cloudbuilder-domains.json > temp.json

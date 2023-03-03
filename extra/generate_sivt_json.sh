@@ -9,10 +9,9 @@
 
 [ "$1" == "" ] && echo "usage: $0 <name_of_cpod>" && exit 1 
 
-add_to_cpodrouter_hosts() {
-	echo "add ${1} -> ${2}"
-	ssh -o LogLevel=error ${NAME_LOWER} "sed "/${1}/d" -i /etc/hosts ; printf \"${1}\\t${2}\\n\" >> /etc/hosts"
-}
+### functions ####
+
+source ./extra/functions.sh
 
 JSON_TEMPLATE=${JSON_SIVT_TEMPLATE:-"sivt-tkgm-template.json"}
 

@@ -19,7 +19,7 @@ fi
 
 ### functions ####
 
-source ./extra/functions
+source ./extra/functions.sh
 
 ### Local vars ####
 
