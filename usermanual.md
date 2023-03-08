@@ -11,6 +11,11 @@ To start a new session from the shell:
 ~$ tmux new -s <<session name>>
 ```
 
+List existing session:
+```shell
+~$ tmux ls
+```
+
 To exit your current session press ***Control-B*** followed by ***d*** (detatch)
 
 ## connecting to cPodFactory
