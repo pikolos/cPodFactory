@@ -49,7 +49,7 @@ else
 fi
 
 PASSWORD=$( ${EXTRA_DIR}/passwd_for_cpod.sh ${CPOD_NAME} ) 
-PASSWORD64=$(echo ${PASSWORD} |base64 )
+PASSWORD64=$(echo -n ${PASSWORD} |base64 )
 
 SCRIPT_DIR=/tmp/scripts
 SCRIPT=/tmp/scripts/sivt-${NAME_LOWER}.json
@@ -78,19 +78,18 @@ ${SCRIPT}
 
 echo "JSON is genereated: ${SCRIPT}"
 echo 
-# echo "sending json to sivt appliance"
-# echo
-
-# sshpass -p ${PASSWORD} scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa.pub root@sivt.${NAME_LOWER}.${ROOT_DOMAIN}:/root/.ssh/authorized_keys
-# scp -o StrictHostKeyChecking=no ${SCRIPT} root@sivt.${NAME_LOWER}.${ROOT_DOMAIN}:/opt/vmware/arcas/src/vsphere/vsphere-dvs-tkgm.json
-# echo "deploying NSX ALB and management cluster"
-# ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json --avi_configuration --tkg_mgmt_configuration --verbose"
-# echo "deploying shared service cluster"
-# echo "press any key to continue"
-# read a
-# ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json --shared_service_configuration  --verbose"
-# echo "deploying workload cluster"
-# echo "press any key to continue"
-# read a
-# ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json  --workload_preconfig --workload_deploy --verbose"
+echo "sending json to sivt appliance"
+echo
+sshpass -p ${PASSWORD} scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa.pub root@sivt.${NAME_LOWER}.${ROOT_DOMAIN}:/root/.ssh/authorized_keys
+scp -o StrictHostKeyChecking=no ${SCRIPT} root@sivt.${NAME_LOWER}.${ROOT_DOMAIN}:/opt/vmware/arcas/src/vsphere-dvs-tkgm.json
+echo "deploying NSX ALB and management cluster"
+ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json --avi_configuration --tkg_mgmt_configuration --verbose"
+echo "deploying shared service cluster"
+echo "press any key to continue"
+read a
+ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json --shared_service_configuration  --verbose"
+echo "deploying workload cluster"
+echo "press any key to continue"
+read a
+ssh -o StrictHostKeyChecking=no root@sivt.${NAME_LOWER}.${ROOT_DOMAIN} "arcas --env vsphere --file /opt/vmware/arcas/src/vsphere-dvs-tkgm.json  --workload_preconfig --workload_deploy --verbose"
 
