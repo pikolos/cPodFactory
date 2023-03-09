@@ -20,14 +20,24 @@ fi
 START=$( date +%s )
 
 #sanity check
-[ "$1" == "" -o "$2" == ""  -o "$3" == ""  ] && echo "usage: $0 <name_of_cpod>  <#esx> <name_of_owner>"  && echo "usage example: $0 LAB01 4 vedw" && exit 1
+if [ $# -ne 3 ]; then
+  echo "usage: $0 <name_of_cpod>  <#esx> <name_of_owner>"
+  echo "usage example: $0 LAB01 4 vedw" 
+  exit 1  
+fi
+
+if [ -z "$1" ] || [ -z "$2"  ] || [ -z "$3"  ];then 
+  echo "usage: $0 <name_of_cpod>  <#esx> <name_of_owner>"
+  echo "usage example: $0 LAB01 4 vedw" 
+  exit 1
+fi
 
 if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
   echo "You are running in a tmux session. That is very wise of you !  :)"
 else
   echo "You are not running in a tmux session. Maybe you want to run this in a tmux session?"
   echo "stopping script because you're not in a TMUX session."
-  exit
+  exit 1
 fi
 
 #main code
