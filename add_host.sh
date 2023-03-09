@@ -7,7 +7,7 @@
 # $2 : Number of ESXi hosts to add
 # $3 : Name of owner
 
-#logging
+#logging what is this?
 if [ -z "$LOGGING" ]
 then
     echo "enabling logging"
@@ -33,11 +33,11 @@ fi
 #main code
 
 #TODO function - exit gate?
-check_space ${1} ${3}
+check_space "${1}" "${3}"
 
 #build the inputs
 #COMPUTE_DIR=""
-NAME_UPPER=$( echo ${1} | tr '[:lower:]' '[:upper:]' )
+NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 NEXT_IP="" #this will  be fun
 NUM_ESX="${2}"
 #ROOT_DOMAIN=""
@@ -46,13 +46,13 @@ STARTNUMESX="" #this will also be fun
 
 # have the hosts created with respool_create
 # how are other var's filled in create_resourcepool.ps1???
-${COMPUTE_DIR}/create_resourcepool.sh ${NAME_UPPER} ${PORTGROUP_NAME} ${NEXT_IP} ${NUM_ESX} ${ROOT_DOMAIN} ${OWNER} ${STARTNUMESX}
+"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
 #update DNS cpodrouter
 
 #end the timer and wrapup
 END=$( date +%s )
-TIME=$( expr ${END} - ${START} )
+TIME=$( expr "${END}" - "${START}" )
 
 echo
 echo "============================="
