@@ -8,6 +8,7 @@
 # $3 : Name of owner
 
 #logging what is this?
+LOGGING="FALSE"
 if [ -z "$LOGGING" ]
 then
     echo "enabling logging"
