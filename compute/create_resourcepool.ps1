@@ -93,13 +93,13 @@ if ($numberESX -lt 2) {
 # Retrieve ResPool in case of adding ESX to existing one
 if ( $startNumESX -gt 1 ) {
 	$ResPool = Get-ResourcePool -Name cPod-$cPodName -Location ( Get-ResourcePool -Name cPod-Workload )
-	$LASTESX=$startNumESX+$numberESX
+	$LASTESX=$startNumESX+$numberESX-1
 }
 else {
 	$LASTESX=$numberESX
 }
 
-Write-Host "Add " $numberESX " ESX VMs starting with" $startNumESX
+Write-Host "Add " $numberESX " ESX VMs starting with" $startNumESX " to "$LASTESX
 For ($i=$startNumESX; $i -le $LASTESX; $i++) {
 	$ESXNUMBER="{0:d2}" -f $i
 	Write-Host "-> cPod-$cPodName-esx$ESXNUMBER"
