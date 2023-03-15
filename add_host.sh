@@ -98,7 +98,7 @@ for ((i=1; i<=${NUM_ESX}; i++)); do
   echo "===$HOST===="
   echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
   #add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
-   STARTNUMESX=$(( $STARTNUMESX+$i ))
+   STARTNUMESX=$(( $STARTNUMESX+1 ))
   echo "===$STARTNUMESX===="
 done
 
