@@ -57,7 +57,7 @@ fi
 
 #build the inputs
 
-CPODNAME_LOWER=$( echo "${HEADER}"-${1} | tr '[:upper:]' '[:lower:]' )
+CPODNAME_LOWER=$( echo "${HEADER}-${1}" | tr '[:upper:]' '[:lower:]' )
 echo "===$CPODNAME_LOWER==="
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 echo "===$NAME_UPPER==="
@@ -67,7 +67,7 @@ NUM_ESX="${2}"
 echo "===$NUM_ESX==="
 OWNER="${3}"
 echo "===$OWNER==="
-SUBNET=$( ./$COMPUTE_DIR/cpod_ip.sh "${1}" )
+SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
 echo "===$SUBNET==="
 NEXT_IP=$($SUBNET.$STARTNUMESX)
 echo "===$NEXT_IP==="
