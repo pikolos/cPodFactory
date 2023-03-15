@@ -78,7 +78,7 @@ NEXT_IP="${SUBNET}.${STARTNUMESX}"
 echo "===$NEXT_IP==="
 PORTGROUP_NAME="{$CPODNAME_LOWER}"
 echo "===$PORTGROUP_NAME==="
-TRANSIT_IP= $( cat /etc/hosts | grep ${CPODNAME_LOWER} | awk '{print $1}' )
+TRANSIT_IP=$( cat /etc/hosts | grep ${CPODNAME_LOWER} | awk '{print $1}' )
 echo "===$TRANSIT_IP==="
 
 for ((i=0; i<${NUM_ESX}; i++)); do
