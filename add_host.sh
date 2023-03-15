@@ -50,18 +50,19 @@ fi
 
 #TODO check_space
 
-
 #build the inputs
+
+CPODNAME_LOWER=$( echo ${HEADER}-${CPOD_NAME} | tr '[:upper:]' '[:lower:]' )
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
-NEXT_IP="" #this will  be fun
+STARTNUMESX=$(get_last_ip  "esx"  ${CPODNAME_LOWER})
 NUM_ESX="${2}"
-#ROOT_DOMAIN=""
 OWNER="$3"
-STARTNUMESX="" #this will also be fun
+SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
+NEXT_IP=""
 
 # have the hosts created with respool_create
-# how are other var's filled in create_resourcepool.ps1???
-"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
+echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN with the first IP being: $NEXT_IP starting at: $STARTNUMESX. "
+#"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
 #update DNS cpodrouter
 
