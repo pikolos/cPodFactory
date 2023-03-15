@@ -19,6 +19,9 @@ fi
 #start the timer
 START=$( date +%s )
 
+# source helper functions
+source ./extra/functions.sh
+
 #input validation check
 if [ $# -ne 3 ]; then
   echo "usage: $0 <name_of_cpod>  <#esx to add> <name_of_owner>"
@@ -57,9 +60,9 @@ CPODNAME_LOWER=$( echo ${HEADER}-${CPOD_NAME} | tr '[:upper:]' '[:lower:]' )
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 STARTNUMESX=$(get_last_ip  "esx"  ${CPODNAME_LOWER})
 NUM_ESX="${2}"
-OWNER="$3"
+OWNER="${3}"
 SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
-NEXT_IP=""
+NEXT_IP=$($SUBNET.$STARTNUMESX)
 
 # have the hosts created with respool_create
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN with the first IP being: $NEXT_IP starting at: $STARTNUMESX. "
