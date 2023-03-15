@@ -19,17 +19,23 @@ fi
 #start the timer
 START=$( date +%s )
 
-#sanity check
+#input validation check
 if [ $# -ne 3 ]; then
-  echo "usage: $0 <name_of_cpod>  <#esx> <name_of_owner>"
+  echo "usage: $0 <name_of_cpod>  <#esx to add> <name_of_owner>"
   echo "usage example: $0 LAB01 4 vedw" 
   exit 1  
 fi
 
 if [ -z "$1" ] || [ -z "$2"  ] || [ -z "$3"  ];then 
-  echo "usage: $0 <name_of_cpod>  <#esx> <name_of_owner>"
+  echo "usage: $0 <name_of_cpod>  <#esx to add> <name_of_owner>"
   echo "usage example: $0 LAB01 4 vedw" 
   exit 1
+fi
+
+if [[ "$2" -ge 1 && "$2" -le 20 ]]; then
+    echo "Do'nt be greedy, specify an amound less then 20"
+    exit 1
+
 fi
 
 if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
@@ -42,11 +48,10 @@ fi
 
 #main code
 
-#TODO function - exit gate?
-check_space "${1}" "${3}"
+#TODO check_space
+
 
 #build the inputs
-#COMPUTE_DIR=""
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 NEXT_IP="" #this will  be fun
 NUM_ESX="${2}"
@@ -59,6 +64,7 @@ STARTNUMESX="" #this will also be fun
 "${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
 #update DNS cpodrouter
+
 
 #end the timer and wrapup
 END=$( date +%s )
