@@ -57,12 +57,12 @@ fi
 
 #build the inputs
 
-CPODNAME_LOWER=$( echo ${HEADER}-${CPOD_NAME} | tr '[:upper:]' '[:lower:]' )
+CPODNAME_LOWER=$( echo ${HEADER}-${1} | tr '[:upper:]' '[:lower:]' )
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 STARTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
 NUM_ESX="${2}"
 OWNER="${3}"
-SUBNET=$( ./$COMPUTE_DIR/cpod_ip.sh ${1} )
+SUBNET=$( ./$COMPUTE_DIR/cpod_ip.sh "${1}" )
 NEXT_IP=$($SUBNET.$STARTNUMESX)
 
 # have the hosts created with respool_create
