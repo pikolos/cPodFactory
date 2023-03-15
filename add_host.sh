@@ -97,7 +97,7 @@ for ((i=1; i<=${NUM_ESX}; i++)); do
   CURRENTESX=$(($STARTNUMESX=+$i))
   $HOST=$(printf "%02d" $CURRENTESX)
   echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
-  add_to_cpodrouter_hosts "${IP}" "$" "${CPODNAME_LOWER}"
+  #add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
 done
 
 
