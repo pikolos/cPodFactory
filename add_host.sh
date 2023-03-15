@@ -32,10 +32,9 @@ if [ -z "$1" ] || [ -z "$2"  ] || [ -z "$3"  ];then
   exit 1
 fi
 
-if [[ "$2" -ge 1 && "$2" -le 20 ]]; then
+if [ "$2" -ge 1] || ["$2" -le 20 ]; then
     echo "Do'nt be greedy, specify an amound less then 20"
     exit 1
-
 fi
 
 if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
