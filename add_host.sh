@@ -57,7 +57,7 @@ fi
 
 #build the inputs
 
-CPODNAME_LOWER=$( echo ${HEADER}-${1} | tr '[:upper:]' '[:lower:]' )
+CPODNAME_LOWER=$( echo "${HEADER}"-${1} | tr '[:upper:]' '[:lower:]' )
 echo "===$CPODNAME_LOWER==="
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 echo "===$NAME_UPPER==="
