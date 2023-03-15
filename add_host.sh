@@ -77,6 +77,21 @@ echo "===$NEXT_IP==="
 PORTGROUP_NAME="{$CPODNAME_LOWER}"
 echo "===$PORTGROUP_NAME==="
 
+for ((i=0; i<=${NUM_ESX}; i++)); do
+  OCTET=$STARTNUMESX+$i
+  IP="${SUBNET}.${OCTET}"
+  echo "Iteration: $i"
+  echo "===$IP==="
+done
+
+echo "Testing if something is not using the same @IP..."
+STATUS=$( ping -c 1 ${IP} 2>&1 > /dev/null ; echo $? )
+STATUS=$(expr $STATUS)
+if [ ${STATUS} == 0 ]; then
+        echo "Error: Something has the same IP."
+        exit 1
+fi
+
 # have the hosts created with respool_create
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN with the first IP being: $NEXT_IP starting at: $STARTNUMESX."
 #"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
