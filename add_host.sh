@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 #goldyck@vmware.com
 
 #This script adds a given number of ESXi hosts to an existing cPOD.
@@ -72,8 +72,9 @@ OWNER="${3}"
 echo "===$OWNER==="
 SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
 echo "===$SUBNET==="
-NEXT_IP=$($SUBNET.$STARTNUMESX)
+NEXT_IP=$("$SUBNET.$STARTNUMESX")
 echo "===$NEXT_IP==="
+PORTGROUP_NAME="$CPODNAME_LOWER"
 
 # have the hosts created with respool_create
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN with the first IP being: $NEXT_IP starting at: $STARTNUMESX. "
