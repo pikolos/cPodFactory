@@ -28,7 +28,7 @@ ROOT_DOMAIN="az-rbx.cloud-garage.net"
 # Transit LS for cPodRouter connectivity
 TRANSIT=172.23
 TRANSIT_SUBNET=${TRANSIT}.2
-
+HEADER_ASN=655
 ASN=${HEADER_ASN}00
 
 TRANSIT_NET="172.22"
