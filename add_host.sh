@@ -7,6 +7,10 @@
 # $2 : Number of ESXi hosts to add
 # $3 : Name of owner
 
+# source helper functions
+. ./env
+source ./extra/functions.sh
+
 #logging what is this?
 LOGGING="FALSE"
 if [ -z "$LOGGING" ]
@@ -20,8 +24,7 @@ fi
 #start the timer
 START=$( date +%s )
 
-# source helper functions
-source ./extra/functions.sh
+
 
 #input validation check
 if [ $# -ne 3 ]; then
