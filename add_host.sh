@@ -77,8 +77,8 @@ echo "===$NEXT_IP==="
 PORTGROUP_NAME="{$CPODNAME_LOWER}"
 echo "===$PORTGROUP_NAME==="
 
-for ((i=0; i<=${NUM_ESX}; i++)); do
-  OCTET=$STARTNUMESX+$i
+for ((i=0; i<${NUM_ESX}; i++)); do
+  OCTET=$(($STARTNUMESX+$i))
   IP="${SUBNET}.${OCTET}"
   echo "Iteration: $i"
   echo "===$IP==="
