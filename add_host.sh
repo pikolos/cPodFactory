@@ -72,7 +72,7 @@ OWNER="${3}"
 echo "===$OWNER==="
 SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
 echo "===$SUBNET==="
-NEXT_IP=$( "${SUBNET}.${STARTNUMESX}" )
+NEXT_IP="${SUBNET}.${STARTNUMESX}"
 echo "===$NEXT_IP==="
 PORTGROUP_NAME="{$CPODNAME_LOWER}"
 echo "===$PORTGROUP_NAME==="
