@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xv
 #goldyck@vmware.com
 
 #This script adds a given number of ESXi hosts to an existing cPOD.
@@ -58,19 +58,25 @@ fi
 #build the inputs
 
 CPODNAME_LOWER=$( echo ${HEADER}-${1} | tr '[:upper:]' '[:lower:]' )
+echo "===$CPODNAME_LOWER==="
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
+echo "===$NAME_UPPER==="
 STARTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
+echo "===$STARTNUMESX==="
 NUM_ESX="${2}"
+echo "===$NUM_ESX==="
 OWNER="${3}"
+echo "===$OWNER==="
 SUBNET=$( ./$COMPUTE_DIR/cpod_ip.sh "${1}" )
+echo "===$SUBNET==="
 NEXT_IP=$($SUBNET.$STARTNUMESX)
+echo "===$NEXT_IP==="
 
 # have the hosts created with respool_create
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN with the first IP being: $NEXT_IP starting at: $STARTNUMESX. "
 #"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${NEXT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
 #update DNS cpodrouter
-
 
 #end the timer and wrapup
 END=$( date +%s )
