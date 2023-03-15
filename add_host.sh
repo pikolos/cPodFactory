@@ -11,8 +11,8 @@
 . ./env
 source ./extra/functions.sh
 
-#logging what is this?
-LOGGING="FALSE"
+#logging 
+#LOGGING="FALSE"
 if [ -z "$LOGGING" ]
 then
     echo "enabling logging"
@@ -100,9 +100,6 @@ for ((i=1; i<=${NUM_ESX}; i++)); do
   add_to_cpodrouter_hosts "${IP}" "${ESXHOST}" "${CPODNAME_LOWER}"
    STARTNUMESX=$(( $STARTNUMESX+1 ))
 done
-
-
-
 
 #end the timer and wrapup
 END=$( date +%s )
