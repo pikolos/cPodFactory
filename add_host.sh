@@ -95,7 +95,9 @@ for ((i=1; i<=${NUM_ESX}; i++)); do
   OCTET=$(($LASTNUMESX+$i))
   IP="${SUBNET}.${OCTET}"
   CURRENTESX=$(( $STARTNUMESX+$i ))
-  $HOST=$(printf "%02d" $CURRENTESX)
+  echo "===$CURRENTESX====
+  $HOST=$( printf "%02d" "${CURRENTESX}" )
+  echo "===$HOST====
   echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
   #add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
 done
