@@ -94,7 +94,7 @@ echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $P
 for ((i=1; i<=${NUM_ESX}; i++)); do
   OCTET=$(($LASTNUMESX+$i))
   IP="${SUBNET}.${OCTET}"
-  $HOST=$( printf "%02d" "${STARTNUMESX}" )
+  HOST=$( printf "%02d" "${STARTNUMESX}" )
   echo "===$HOST===="
   echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
   #add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
