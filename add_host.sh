@@ -66,7 +66,7 @@ NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 echo "===$NAME_UPPER==="
 LASTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
 echo "===$LASTNUMESX==="
-STARTNUMESX=$(($STARTNUMESX+1))
+STARTNUMESX=$(($LASTNUMESX+1))
 echo "===$STARTNUMESX==="
 NUM_ESX="${2}"
 echo "===$NUM_ESX==="
