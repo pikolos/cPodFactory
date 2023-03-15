@@ -69,7 +69,7 @@ echo "===$NAME_UPPER==="
 LASTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
 echo "===$LASTNUMESX==="
 
-STARTNUMESX=$(($LASTNUMESX+1))
+STARTNUMESX=$(($LASTNUMESX-20+1))
 echo "===$STARTNUMESX==="
 
 NUM_ESX="${2}"
@@ -90,8 +90,8 @@ echo "===$PORTGROUP_NAME==="
 TRANSIT_IP=$( cat /etc/hosts | grep ${CPODNAME_LOWER} | awk '{print $1}' )
 echo "===$TRANSIT_IP==="
 
-for ((i=0; i<${NUM_ESX}; i++)); do
-  OCTET=$(($STARTNUMESX+$i))
+for ((i=1; i<=${NUM_ESX}; i++)); do
+  OCTET=$(($LASTNUMESX+$i))
   IP="${SUBNET}.${OCTET}"
   echo "checking for duplicate ip on $IP..."
   STATUS=$( ping -c 1 ${IP} 2>&1 > /dev/null ; echo $? )
