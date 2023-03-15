@@ -90,6 +90,19 @@ echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $P
 
 #update DNS cpodrouter
 
+#check for duplicate IP's 
+for ((i=1; i<=${NUM_ESX}; i++)); do
+  OCTET=$(($LASTNUMESX+$i))
+  IP="${SUBNET}.${OCTET}"
+  CURRENTESX=$(($STARTNUMESX=+$i))
+  $HOST=$(printf "%02d" $CURRENTESX)
+  echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
+  add_to_cpodrouter_hosts "${IP}" "$" "${CPODNAME_LOWER}"
+done
+
+
+
+
 #end the timer and wrapup
 END=$( date +%s )
 TIME=$( expr "${END}" - "${START}" )
