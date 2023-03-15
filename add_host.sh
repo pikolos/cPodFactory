@@ -96,8 +96,8 @@ for ((i=1; i<=${NUM_ESX}; i++)); do
   IP="${SUBNET}.${OCTET}"
   HOST=$( printf "%02d" "${STARTNUMESX}" )
   ESXHOST="esx${HOST}"
-  echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
-  add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
+  echo "adding IP $IP for host $ESXHOST on $CPODNAME_LOWER"
+  add_to_cpodrouter_hosts "${IP}" "${ESXHOST}" "${CPODNAME_LOWER}"
    STARTNUMESX=$(( $STARTNUMESX+1 ))
 done
 
