@@ -86,7 +86,7 @@ done
 
 # have the hosts created with respool_create
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN starting at: $STARTNUMESX."
-"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${TRANSIT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
+#"${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${TRANSIT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
 #update DNS cpodrouter
 
@@ -94,7 +94,7 @@ echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $P
 for ((i=1; i<=${NUM_ESX}; i++)); do
   OCTET=$(($LASTNUMESX+$i))
   IP="${SUBNET}.${OCTET}"
-  CURRENTESX=$(($STARTNUMESX=+$i))
+  CURRENTESX=$(( $STARTNUMESX+$i ))
   $HOST=$(printf "%02d" $CURRENTESX)
   echo "adding IP $IP for host $HOST on $CPODNAME_LOWER"
   #add_to_cpodrouter_hosts "${IP}" "${HOST}" "${CPODNAME_LOWER}"
