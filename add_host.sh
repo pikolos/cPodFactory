@@ -62,22 +62,31 @@ fi
 
 CPODNAME_LOWER=$( echo "${HEADER}-${1}" | tr '[:upper:]' '[:lower:]' )
 echo "===$CPODNAME_LOWER==="
+
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 echo "===$NAME_UPPER==="
+
 LASTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
 echo "===$LASTNUMESX==="
+
 STARTNUMESX=$(($LASTNUMESX+1))
 echo "===$STARTNUMESX==="
+
 NUM_ESX="${2}"
 echo "===$NUM_ESX==="
+
 OWNER="${3}"
 echo "===$OWNER==="
+
 SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
 echo "===$SUBNET==="
+
 NEXT_IP="${SUBNET}.${STARTNUMESX}"
 echo "===$NEXT_IP==="
-PORTGROUP_NAME="{$CPODNAME_LOWER}"
+
+PORTGROUP_NAME="${CPODNAME_LOWER}"
 echo "===$PORTGROUP_NAME==="
+
 TRANSIT_IP=$( cat /etc/hosts | grep ${CPODNAME_LOWER} | awk '{print $1}' )
 echo "===$TRANSIT_IP==="
 
