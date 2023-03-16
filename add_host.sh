@@ -38,7 +38,7 @@ if [ -z "$1" ] || [ -z "$2"  ] || [ -z "$3"  ];then
 fi
 
 if [[ "$2" -ge 1 && "$2" -le 20 ]]; then
-    echo "$2 is between 1 and 20"
+    echo "$2 is between 1 and 20...good!"
 else
     echo "$2 is not between 1 and 20, don't be greedy"
     exit 1
@@ -66,7 +66,7 @@ NUM_ESX="${2}"
 OWNER="${3}"
 SUBNET=$( ./"${COMPUTE_DIR}"/cpod_ip.sh "${1}" )
 PORTGROUP_NAME="${CPODNAME_LOWER}"
-TRANSIT_IP=$( grep -q "${CPODNAME_LOWER}" "/etc/hosts" | awk '{print $1}' )
+TRANSIT_IP=$( grep "${CPODNAME_LOWER}" "/etc/hosts" | awk '{print $1}' )
 
 #check for duplicate IP's 
 for ((i=1; i<=NUM_ESX; i++)); do
