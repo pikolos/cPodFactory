@@ -24,8 +24,6 @@ fi
 #start the timer
 START=$( date +%s )
 
-
-
 #input validation check
 if [ $# -ne 3 ]; then
   echo "usage: $0 <name_of_cpod>  <#esx to add> <name_of_owner>"
@@ -63,22 +61,21 @@ fi
 CPODNAME_LOWER=$( echo "${HEADER}-${1}" | tr '[:upper:]' '[:lower:]' )
 NAME_UPPER=$( echo "${1}" | tr '[:lower:]' '[:upper:]' )
 LASTNUMESX=$(get_last_ip  "esx"  "${CPODNAME_LOWER}")
-STARTNUMESX=$(($LASTNUMESX-20+1))
+STARTNUMESX=$(( LASTNUMESX-20+1 ))
 NUM_ESX="${2}"
 OWNER="${3}"
-SUBNET=$( ./${COMPUTE_DIR}/cpod_ip.sh ${1} )
-NEXT_IP="${SUBNET}.${STARTNUMESX}"
+SUBNET=$( ./"${COMPUTE_DIR}"/cpod_ip.sh "${1}" )
 PORTGROUP_NAME="${CPODNAME_LOWER}"
-TRANSIT_IP=$( cat /etc/hosts | grep ${CPODNAME_LOWER} | awk '{print $1}' )
+TRANSIT_IP=$( grep -q "${CPODNAME_LOWER}" "/etc/hosts" | awk '{print $1}' )
 
 #check for duplicate IP's 
-for ((i=1; i<=${NUM_ESX}; i++)); do
-  OCTET=$(($LASTNUMESX+$i))
+for ((i=1; i<=NUM_ESX; i++)); do
+  OCTET=$(( LASTNUMESX+i ))
   IP="${SUBNET}.${OCTET}"
   echo "checking for duplicate ip on $IP..."
-  STATUS=$( ping -c 1 ${IP} 2>&1 > /dev/null ; echo $? )
-  STATUS=$(expr $STATUS)
-  if [ ${STATUS} == 0 ]; then
+  STATUS=$( ping -c 1 "${IP}" 2>&1 > /dev/null ; echo $? )
+  STATUS=$(( "$STATUS" ))
+  if [ "${STATUS}" == 0 ]; then
           echo "Error: Something has the same IP."
           exit 1
   fi
@@ -88,22 +85,20 @@ done
 echo "Adding $NUM_ESX ESXi hosts to $NAME_UPPER owned by $OWNER on portgroup: $PORTGROUP_NAME in domain: $ROOT_DOMAIN starting at: $STARTNUMESX."
 "${COMPUTE_DIR}"/create_resourcepool.sh "${NAME_UPPER}" "${PORTGROUP_NAME}" "${TRANSIT_IP}" "${NUM_ESX}" "${ROOT_DOMAIN}" "${OWNER}" "${STARTNUMESX}"
 
-#update DNS cpodrouter
-
-#check for duplicate IP's 
-for ((i=1; i<=${NUM_ESX}; i++)); do
-  OCTET=$(($LASTNUMESX+$i))
+#Update DNS
+for ((i=1; i<=NUM_ESX; i++)); do
+  OCTET=$(( LASTNUMESX+i ))
   IP="${SUBNET}.${OCTET}"
   HOST=$( printf "%02d" "${STARTNUMESX}" )
   ESXHOST="esx${HOST}"
   echo "adding IP $IP for host $ESXHOST on $CPODNAME_LOWER"
   add_to_cpodrouter_hosts "${IP}" "${ESXHOST}" "${CPODNAME_LOWER}"
-   STARTNUMESX=$(( $STARTNUMESX+1 ))
+  STARTNUMESX=$(( STARTNUMESX+1 ))
 done
 
 #end the timer and wrapup
 END=$( date +%s )
-TIME=$( expr "${END}" - "${START}" )
+TIME=$(( "${END}" - "${START}" ))
 
 echo
 echo "============================="
